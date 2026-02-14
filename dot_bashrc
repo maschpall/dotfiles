@@ -131,26 +131,39 @@ export PATH="$HOME/.local/bin:$PATH"
 ########## Chezmoi CLI-like helper ##########
 # Chezmoi is a package that
 # Manage your dotfiles across multiple diverse machines, securely.
-# Curated tracking list (edit this as you add more apps)
+#Heloo
+# Curated tracking list (edit as needed)
 _chz_targets=(
 	"$HOME/.bashrc"
 	"$HOME/.wezterm.lua"
 	"$HOME/.config/nvim"
+	# "$HOME/.config/starship.toml"  # uncomment if you decide to include again
 )
 
-# One entry-point: chz <subcommand> [args]
 chz() {
 	set -o pipefail
+	local repo
+	repo="$(chezmoi source-path)" || {
+		echo "ERROR: cannot get chezmoi source-path"
+		return 1
+	}
+
 	case "$1" in
 	add)
 		shift
 		if [ "$#" -eq 0 ]; then
-			echo "==> Adding curated targets to chezmoi:"
+			echo "==> Adding curated targets:"
 			printf '  %s\n' "${_chz_targets[@]}"
-			chezmoi add "${_chz_targets[@]}"
+			chezmoi add "${_chz_targets[@]}" || {
+				echo "ERROR: chezmoi add failed"
+				return 1
+			}
 		else
 			echo "==> Adding specified paths: $*"
-			chezmoi add "$@"
+			chezmoi add "$@" || {
+				echo "ERROR: chezmoi add failed"
+				return 1
+			}
 		fi
 		;;
 	diff)
@@ -160,6 +173,7 @@ chz() {
 		chezmoi apply
 		;;
 	cd)
+		# Interactive subshell in the source repo
 		chezmoi cd
 		;;
 	sync)
@@ -172,7 +186,7 @@ chz() {
 			return 1
 		fi
 
-		echo "==> Diff:"
+		echo "==> Diff (source vs \$HOME):"
 		chezmoi diff || true
 
 		echo "==> Applying to \$HOME..."
@@ -181,21 +195,28 @@ chz() {
 			return 1
 		fi
 
-		echo "==> Commit & push..."
-		# Always attempt to commit; if nothing to commit, continue
-		if chezmoi cd; then
-			# Stage everything including deletions/renames
-			git add -A
-			# Commit if there are staged changes
-			if ! git diff --cached --quiet; then
-				git commit -m "$msg"
-				git push
-			else
-				echo "==> No changes to commit."
+		echo "==> Git status (before staging):"
+		git -C "$repo" status --porcelain -b || true
+
+		echo "==> Staging all changes in: $repo"
+		git -C "$repo" add -A
+
+		echo "==> Git status (after staging):"
+		git -C "$repo" status --porcelain -b || true
+
+		if ! git -C "$repo" diff --cached --quiet; then
+			echo "==> Committing with message: $msg"
+			if ! git -C "$repo" commit -m "$msg"; then
+				echo "ERROR: commit failed" >&2
+				return 1
+			fi
+			echo "==> Pushing..."
+			if ! git -C "$repo" push; then
+				echo "ERROR: push failed" >&2
+				return 1
 			fi
 		else
-			echo "ERROR: could not enter chezmoi source directory" >&2
-			return 1
+			echo "==> No changes to commit."
 		fi
 		;;
 	help | "")
@@ -203,16 +224,15 @@ chz() {
 Usage: chz <command> [args]
 
 Commands:
-  add [paths...]   Add paths to chezmoi; if none provided, add curated targets
+  add [paths...]   Add paths to chezmoi; if none, add curated targets
   diff             Show pending changes (source vs $HOME)
   apply            Apply changes from source to $HOME
-  cd               Open chezmoi source repository
+  cd               Open chezmoi source repository (interactive shell)
   sync [message]   Add curated targets, diff, apply, commit, push
 
 Notes:
-  - 'chz sync' handles the full workflow. No need to run git commands manually.
-  - Edit files in place (e.g., ~/.bashrc, ~/.wezterm.lua, ~/.config/nvim/**),
-    then run 'chz sync "message"'.
+  - 'sync' uses 'git -C $(chezmoi source-path)' and avoids 'chezmoi cd' subshells.
+  - Normal workflow: edit your files in $HOME, then 'chz sync "message"'.
 EOF
 		;;
 	*)
