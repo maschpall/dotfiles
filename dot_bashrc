@@ -127,3 +127,99 @@ eval "$(pyenv virtualenv-init -)"
 export PATH="$PATH:/opt/nvim-linux-x86_64"
 eval "$(starship init bash)"
 export PATH="$HOME/.local/bin:$PATH"
+
+########## Chezmoi CLI-like helper ##########
+# Chezmoi is a package that
+# Manage your dotfiles across multiple diverse machines, securely.
+# Curated tracking list (edit this as you add more apps)
+_chz_targets=(
+	"$HOME/.bashrc"
+	"$HOME/.wezterm.lua"
+	"$HOME/.config/nvim"
+)
+
+# One entry-point: chz <subcommand> [args]
+chz() {
+	set -o pipefail
+	case "$1" in
+	add)
+		shift
+		if [ "$#" -eq 0 ]; then
+			echo "==> Adding curated targets to chezmoi:"
+			printf '  %s\n' "${_chz_targets[@]}"
+			chezmoi add "${_chz_targets[@]}"
+		else
+			echo "==> Adding specified paths: $*"
+			chezmoi add "$@"
+		fi
+		;;
+	diff)
+		chezmoi diff
+		;;
+	apply)
+		chezmoi apply
+		;;
+	cd)
+		chezmoi cd
+		;;
+	sync)
+		shift
+		local msg="${1:-update dotfiles}"
+
+		echo "==> Adding curated targets..."
+		if ! chezmoi add "${_chz_targets[@]}"; then
+			echo "ERROR: chezmoi add failed" >&2
+			return 1
+		fi
+
+		echo "==> Diff:"
+		chezmoi diff || true
+
+		echo "==> Applying to \$HOME..."
+		if ! chezmoi apply; then
+			echo "ERROR: chezmoi apply failed" >&2
+			return 1
+		fi
+
+		echo "==> Commit & push..."
+		# Always attempt to commit; if nothing to commit, continue
+		if chezmoi cd; then
+			# Stage everything including deletions/renames
+			git add -A
+			# Commit if there are staged changes
+			if ! git diff --cached --quiet; then
+				git commit -m "$msg"
+				git push
+			else
+				echo "==> No changes to commit."
+			fi
+		else
+			echo "ERROR: could not enter chezmoi source directory" >&2
+			return 1
+		fi
+		;;
+	help | "")
+		cat <<'EOF'
+Usage: chz <command> [args]
+
+Commands:
+  add [paths...]   Add paths to chezmoi; if none provided, add curated targets
+  diff             Show pending changes (source vs $HOME)
+  apply            Apply changes from source to $HOME
+  cd               Open chezmoi source repository
+  sync [message]   Add curated targets, diff, apply, commit, push
+
+Notes:
+  - 'chz sync' handles the full workflow. No need to run git commands manually.
+  - Edit files in place (e.g., ~/.bashrc, ~/.wezterm.lua, ~/.config/nvim/**),
+    then run 'chz sync "message"'.
+EOF
+		;;
+	*)
+		echo "chz: unknown command '$1' (try: chz help)"
+		return 1
+		;;
+	esac
+	set +o pipefail
+}
+######## End Chezmoi helper ########
