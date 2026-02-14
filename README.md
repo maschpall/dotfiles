@@ -15,3 +15,9 @@ Note: still need to write on how to set up a chezmoi dir + init (its in the micr
     - repo="$(chezmoi source-path)"
     - git -C "$repo" fetch origin
     - git -C "$repo" pull --rebase origin master
+
+When editing files that are not dotfiles, like the README, carefull with the conflicts! So basically:
+  - always edit README from the git repo, not the chezmoi.
+  - once edited, git add, commit and pull normally
+  - if needed to edit a dotfile and want to push via the alias chz sync WAIT!
+    - first need to do git pull so the changes in README can be updated, then edit the dotfile and proceed as normal. 
