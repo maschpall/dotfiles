@@ -13,4 +13,4 @@ In this case, in order to keep a clean sync between local dotfile copies under t
 
   chz sync: function that comprehends several steps -> chezmoi add, chezmoi diff, chezmoi apply, chezmoi cd && git add -A && git commit -m && git push
 
-In this manner i only run this and already sync the chezmoi genereated files locally, and the pushed remote files with my repo.
+In this manner i only run this and already sync the chezmoi genereated files locally, and the pushed remote files with my repo
