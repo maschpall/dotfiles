@@ -15,3 +15,5 @@ Note: still need to write on how to set up a chezmoi dir + init (its in the micr
     - repo="$(chezmoi source-path)"
     - git -C "$repo" fetch origin
     - git -C "$repo" pull --rebase origin master
+
+
