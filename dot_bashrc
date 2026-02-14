@@ -138,7 +138,7 @@ _chz_targets=(
 	"$HOME/.config/nvim"
 )
 
-# One entry-point: chz <subcommand> [args]
+# One entry-point: chz <subcommand> [args] here testing commits
 chz() {
 	set -o pipefail
 	case "$1" in
