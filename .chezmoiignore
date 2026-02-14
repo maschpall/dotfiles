@@ -1,0 +1,21 @@
+# Global ignores (never manage these with chezmoi)
+.ssh/
+.gitconfig  # if it contains tokens
+.netrc
+aws/credentials
+.gnupg/
+.history
+.python_history
+
+# App-specific secrets you might have
+**/*secrets*
+**/*.key
+**/*.pem
+**/*.asc
+**/.env
+**/.env.*
+**/credentials.*
+**/config.local.*
+
+# Example: if your nvim contains local-only stuff
+dot_config/nvim/lua/*local*.lua
