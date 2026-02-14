@@ -100,6 +100,8 @@ alias gplr='git pull --rebase'
 alias gst='git status -sb'
 alias glg='git log --oneline --graph --decorate --all -n 20'
 
+# test here
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
