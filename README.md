@@ -21,3 +21,13 @@ When editing files that are not dotfiles, like the README, carefull with the con
   - once edited, git add, commit and pull normally
   - if needed to edit a dotfile and want to push via the alias chz sync WAIT!
     - first need to do git pull so the changes in README can be updated, then edit the dotfile and proceed as normal. 
+
+
+
+## Clear workflow
+
+  - README -> a,c,p -> chz cd -> pull
+  - .bashrc -> chz sync -> updates the dot_bashrc in the chezmoi repo and pushes it to github
+  - in dotfiles repo -> git pull -> gets the updates locally at the dotfiles repo
+
+Q: then maybe i just need a chezmoi repo? since i will basically always modify dotfiles normally, and then just run chz sync (and if there are no files in the curated set paths like README i just run chz add README and then chz sync)
