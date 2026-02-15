@@ -31,3 +31,7 @@ When editing files that are not dotfiles, like the README, carefull with the con
   - in dotfiles repo -> git pull -> gets the updates locally at the dotfiles repo
 
 Q: then maybe i just need a chezmoi repo? since i will basically always modify dotfiles normally, and then just run chz sync (and if there are no files in the curated set paths like README i just run chz add README and then chz sync)
+
+### TODO 
+
+  - write a cleaner README file and also assess all the repo creation commands and workflow
