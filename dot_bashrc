@@ -130,7 +130,10 @@ eval "$(pyenv virtualenv-init -)"
 
 # path for newer version of neovim
 export PATH="$PATH:/opt/nvim-linux-x86_64"
+
+# Starhip config for my terminal
 eval "$(starship init bash)"
+
 export PATH="$HOME/.local/bin:$PATH"
 
 ########## Chezmoi CLI-like helper ##########
