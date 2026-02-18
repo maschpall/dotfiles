@@ -147,7 +147,7 @@ _chz_targets=(
 	"$HOME/.bashrc"
 	"$HOME/.config/wezterm/wezterm.lua"
 	"$HOME/.config/nvim"
-	# "$HOME/.config/starship.toml"  # uncomment if you decide to include again
+	"$HOME/.config/starship.toml" # uncomment if you decide to include again
 )
 
 chz() {
