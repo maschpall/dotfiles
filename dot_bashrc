@@ -102,6 +102,9 @@ alias glg='git log --oneline --graph --decorate --all -n 20'
 
 # Alias for the kickstart version of neovim from hendrikmi
 alias neokick='NVIM_APPNAME=hendrikmi/nvim/ nvim'
+alias v='NVIM_APPNAME=lazyvim nvim'
+# alias v='NVIM_APPNAME=lazyvim-git/LazyVim nvim'
+alias neobean='NVIM_APPNAME=linkarzu/dotfiles-latest/neovim/neobean nvim'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -146,7 +149,7 @@ export PATH="$HOME/.local/bin:$PATH"
 _chz_targets=(
 	"$HOME/.bashrc"
 	"$HOME/.config/wezterm/wezterm.lua"
-	"$HOME/.config/nvim"
+	"$HOME/.config/lazyvim"
 	"$HOME/.config/starship.toml" # uncomment if you decide to include again
 )
 
@@ -253,3 +256,6 @@ EOF
 	set +o pipefail
 }
 ######## End Chezmoi helper ########
+
+# Zoxide plugin for a smoother cd experience
+eval "$(zoxide init bash)"
