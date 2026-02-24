@@ -102,7 +102,7 @@ alias glg='git log --oneline --graph --decorate --all -n 20'
 
 # Alias for the kickstart version of neovim from hendrikmi
 alias neokick='NVIM_APPNAME=hendrikmi/nvim/ nvim'
-alias v='NVIM_APPNAME=lazyvim nvim'
+alias v='NVIM_APPNAME=dotfiles-msp/neovim nvim'
 # alias v='NVIM_APPNAME=lazyvim-git/LazyVim nvim'
 alias neobean='NVIM_APPNAME=linkarzu/dotfiles-latest/neovim/neobean nvim'
 # Alias definitions.
@@ -148,9 +148,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # Curated tracking list (edit as needed)
 _chz_targets=(
 	"$HOME/.bashrc"
-	"$HOME/.config/wezterm/wezterm.lua"
-	"$HOME/.config/lazyvim"
-	"$HOME/.config/starship.toml" # uncomment if you decide to include again
+	"$HOME/.config/dotfiles-msp/"
 )
 
 chz() {
